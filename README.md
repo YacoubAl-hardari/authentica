@@ -1,4 +1,3 @@
-
 ![alt text](authentica.png)
 
 # Authentica Laravel Package
@@ -30,7 +29,7 @@ Add the following to your `.env` file (see `.env.example` for all options):
 ```
 AUTHENTICA_API_KEY=your_api_key_here
 AUTHENTICA_BASE_URL=https://api.authentica.sa/api/v2
-AUTHENTICA_DEFAULT_CHANNEL=sms # sms, whatsapp, email 
+AUTHENTICA_DEFAULT_CHANNEL=sms # sms, whatsapp, email
 AUTHENTICA_FALLBACK_CHANNEL=email # optional
 AUTHENTICA_DEFAULT_TEMPLATE_ID=31 # optional, default: 1
 AUTHENTICA_FALLBACK_TEMPLATE_ID=2 # optional, default: 2
@@ -69,22 +68,75 @@ if ($result->successful()) {
 ### Face Verification
 
 ```php
-Authentica::verifyFace(
+$result = Authentica::verifyFace(
     'user_123',
     Authentica::fileToBase64(storage_path('app/faces/reference.jpg')),
     Authentica::fileToBase64(storage_path('app/faces/capture.jpg'))
 );
+if ($result->successful()) {
+    // Face match successful
+} else {
+    // Handle failed verification
+    $error = $result->message();
+}
 ```
 
 ### Voice Verification
 
 ```php
-Authentica::verifyVoice(
+$result = Authentica::verifyVoice(
     'user_123',
     Authentica::fileToBase64(storage_path('app/voice/reference.wav')),
     Authentica::fileToBase64(storage_path('app/voice/capture.wav'))
 );
+if ($result->successful()) {
+    // Voice match successful
+} else {
+    // Handle failed verification
+    $error = $result->message();
+}
 ```
+
+---
+
+## Practical Scenario: Face & Voice Verification
+
+### Example: User Login with Face or Voice
+
+1. **User uploads or captures a reference image/audio during registration.**
+   - Store the reference file securely (e.g., in `storage/app/faces/` or `storage/app/voice/`).
+2. **User attempts to log in and provides a real-time image or audio.**
+3. **Convert both files to Base64:**
+   ```php
+   $referenceBase64 = Authentica::fileToBase64($referencePath); // e.g., reference.jpg or reference.wav
+   $queryBase64 = Authentica::fileToBase64($queryPath); // e.g., capture.jpg or capture.wav
+   ```
+4. **Call the verification method:**
+   - Face:
+     ```php
+     $result = Authentica::verifyFace($userId, $referenceBase64, $queryBase64);
+     ```
+   - Voice:
+     ```php
+     $result = Authentica::verifyVoice($userId, $referenceBase64, $queryBase64);
+     ```
+5. **Check the result:**
+   ```php
+   if ($result->successful()) {
+       // Allow login or next step
+   } else {
+       // Show error message to user
+       $error = $result->message();
+   }
+   ```
+
+### Notes
+
+- Both methods validate input and handle errors (invalid Base64, missing user ID, file too large, etc.).
+- The response object provides helpers: `successful()`, `data()`, `message()`, etc.
+- Always handle possible errors and inform the user accordingly.
+
+---
 
 ### Send Custom SMS
 
@@ -113,6 +165,7 @@ $balance = Authentica::getBalance()->credits;
 - For more details, see the [Authentica API documentation](https://portal.authentica.sa/docs/).
 
 ---
+
 ## Support
 
 For technical inquiries: yacoub@yacoubalhaidari.com
