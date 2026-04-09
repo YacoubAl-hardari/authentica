@@ -1,0 +1,42 @@
+{
+    "name": "authentica/authentica",
+    "description": "Official Laravel package for Authentica API (OTP, Face, Voice verification)",
+    "keywords": ["authentica", "otp", "sms", "verification", "biometrics", "laravel"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Authentica Team",
+            "homepage": "https://authentica.sa"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "guzzlehttp/guzzle": "^7.5",
+        "illuminate/support": "^9.0|^10.0|^11.0",
+        "propaganistas/laravel-phone": "^4.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0",
+        "laravel/pint": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Authentica\\LaravelAuthentica\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Authentica\\LaravelAuthentica\\AuthenticaServiceProvider"
+            ],
+            "aliases": {
+                "Authentica": "Authentica\\LaravelAuthentica\\Facades\\Authentica"
+            }
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
